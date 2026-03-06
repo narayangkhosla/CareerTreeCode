@@ -1,0 +1,73 @@
+{
+  "tasks": [
+    {
+      "id": 1,
+      "title": "Buy Milk",
+      "priority": "high",
+      "done": true,
+      "tags": [],
+      "type": "Task"
+    },
+    {
+      "id": 3,
+      "title": "Go for a walk",
+      "priority": "low",
+      "done": false,
+      "tags": [],
+      "type": "Task"
+    },
+    {
+      "id": 4,
+      "title": "Buy Milk",
+      "priority": "high",
+      "done": false,
+      "tags": [],
+      "type": "Task"
+    },
+    {
+      "id": 5,
+      "title": "Finish Python Project",
+      "priority": "medium",
+      "done": false,
+      "tags": [],
+      "type": "Task"
+    },
+    {
+      "id": 6,
+      "title": "Go for a walk",
+      "priority": "low",
+      "done": false,
+      "tags": [],
+      "type": "Task"
+    },
+    {
+      "id": 7,
+      "title": "Buy Milk",
+      "priority": "high",
+      "done": false,
+      "tags": [],
+      "type": "Task"
+    },
+    {
+      "id": 8,
+      "title": "Finish Python Project",
+      "priority": "medium",
+      "done": false,
+      "tags": [],
+      "type": "Task"
+    },
+    {
+      "id": 9,
+      "title": "Go for a walk",
+      "priority": "low",
+      "done": false,
+      "tags": [],
+      "type": "Task"
+    }
+  ],
+  "meta": {
+    "total": 8,
+    "done": 1,
+    "next_id": 10
+  }
+}

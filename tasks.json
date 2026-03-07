@@ -6,6 +6,7 @@
       "priority": "high",
       "done": true,
       "tags": [],
+      "notes": "",
       "type": "Task"
     },
     {
@@ -14,6 +15,7 @@
       "priority": "low",
       "done": false,
       "tags": [],
+      "notes": "",
       "type": "Task"
     },
     {
@@ -22,22 +24,16 @@
       "priority": "high",
       "done": false,
       "tags": [],
+      "notes": "",
       "type": "Task"
     },
     {
       "id": 5,
       "title": "Finish Python Project",
       "priority": "medium",
-      "done": false,
+      "done": true,
       "tags": [],
-      "type": "Task"
-    },
-    {
-      "id": 6,
-      "title": "Go for a walk",
-      "priority": "low",
-      "done": false,
-      "tags": [],
+      "notes": "",
       "type": "Task"
     },
     {
@@ -46,6 +42,7 @@
       "priority": "high",
       "done": false,
       "tags": [],
+      "notes": "",
       "type": "Task"
     },
     {
@@ -54,6 +51,7 @@
       "priority": "medium",
       "done": false,
       "tags": [],
+      "notes": "",
       "type": "Task"
     },
     {
@@ -62,12 +60,13 @@
       "priority": "low",
       "done": false,
       "tags": [],
+      "notes": "",
       "type": "Task"
     }
   ],
   "meta": {
-    "total": 8,
-    "done": 1,
+    "total": 7,
+    "done": 2,
     "next_id": 10
   }
 }

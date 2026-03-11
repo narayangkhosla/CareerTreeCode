@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<!-- Emmet takes div by default -->
+
+<body>
+    <div class="quiz-box">
+        <h1>Interactive Quiz</h1>
+        <p>Answer the questions and test your web devlopment knowledge</p>
+        <button id="theme-btn">Toggle Dark Mode</button>
+
+        <div id="quiz-area">
+            <p id="progress"></p>
+            <h2 id="question">Question goes here</h2>
+            <div id="answers"></div>
+            <p id="feedback"></p>
+            <p id="score">Score: 0</p>
+            <button id="next-btn">Next Question</button>
+        </div>
+        <div id="result-box">
+            <h2>Quiz Finished!</h2>
+            <p id="final-score"></p>
+            <button id="restart-btn">Restart Quiz</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+
+
+</html>

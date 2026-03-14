@@ -17,7 +17,20 @@
             <input type="number" id="colorCount" placeholder="Enter number of colours" min="1" max="20">
             <button id="generateBtn">Generate Colours</button>
             <button id="clearBtn">Clear Message</button>
+            <label for="copyFormat">Copy Format</label>
+            <select id="copyFormat">
+                <option value="hex">HEX</option>
+                <option value="rgb">RGB</option>
+            </select>
         </div>
+
+        <div class="gradient-controls">
+            <button id="gradientBtn">Generate Gradient</button>
+        </div>
+
+        <div id="gradientPreview"></div>
+        <p id="gradientCode"></p>
+
         <p id="message"></p>
         <p class="note">You can generate between 1 and 20 colours. Click a colour to copy its HEX code.</p>
 

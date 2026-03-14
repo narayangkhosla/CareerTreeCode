@@ -1,0 +1,574 @@
+<!-- The Colour Palette Generator is a small web application built using HTML, CSS, and JavaScript. The user enters how many colours they want, and the program generates that many random colour boxes on the screen. Each box displays a HEX colour code (for example #3FA7D6). When the user clicks on a colour box, the HEX code is automatically copied to the clipboard so it can be used elsewhere.
+
+The project demonstrates how JavaScript can dynamically create elements on a webpage, respond to user actions, and update the page in real time. It also includes features such as limiting the number of colours to 20, keyboard shortcuts, and temporary messages to improve the user experience.
+
+Overall, it is a practical beginner project that combines functions, DOM manipulation, events, and dynamic content generation. -->
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colour Palette Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            color: #111;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+
+        h1 {
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        #countHeading {
+            margin-bottom: 20px;
+            font-size: 22px;
+        }
+
+        .controls,
+        .extra-controls {
+            margin-bottom: 20px;
+        }
+
+        input[type="number"],
+        select {
+            padding: 12px;
+            font-size: 16px;
+            width: 180px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin: 5px;
+        }
+
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            background-color: black;
+            color: white;
+            margin: 5px;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        #message {
+            min-height: 24px;
+            font-weight: bold;
+            color: green;
+            margin-bottom: 20px;
+        }
+
+        .palette {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .color-box {
+            width: 170px;
+            min-height: 200px;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 15px;
+            box-sizing: border-box;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s;
+            position: relative;
+        }
+
+        .color-box:hover {
+            transform: scale(1.05);
+        }
+
+        .color-code {
+            background-color: rgba(255, 255, 255, 0.85);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+
+        .lock-btn {
+            padding: 8px 12px;
+            font-size: 18px;
+            background-color: white;
+            color: black;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .locked {
+            outline: 4px solid gold;
+        }
+
+        .note {
+            color: #666;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .save-controls {
+            margin: 25px 0 10px;
+        }
+
+        #savedPalettesSection {
+            margin-top: 35px;
+            text-align: left;
+        }
+
+        #savedPalettesSection h3 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .saved-palette {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 12px;
+            margin: 12px auto;
+            max-width: 760px;
+        }
+
+        .saved-palette-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .saved-palette-colors {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .saved-color {
+            width: 52px;
+            height: 52px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .saved-palette-buttons button {
+            margin-right: 10px;
+            margin-top: 8px;
+        }
+
+        body.dark-mode {
+            background-color: #1e1e1e;
+            color: white;
+        }
+
+        body.dark-mode .subtitle,
+        body.dark-mode .note {
+            color: #d0d0d0;
+        }
+
+        body.dark-mode input[type="number"],
+        body.dark-mode select {
+            background-color: #2c2c2c;
+            color: white;
+            border: 1px solid #555;
+        }
+
+        body.dark-mode .color-code {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+        }
+
+        body.dark-mode .lock-btn {
+            background-color: #2c2c2c;
+            color: white;
+            border: 1px solid #666;
+        }
+
+        body.dark-mode .saved-palette {
+            background-color: #2a2a2a;
+            border: 1px solid #555;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Colour Palette Generator</h1>
+        <p class="subtitle">Generate colours, lock favourites, copy in HEX or RGB, save palettes, and switch themes.</p>
+
+        <h2 id="countHeading">0 colours on screen</h2>
+
+        <div class="controls">
+            <input type="number" id="colorCount" placeholder="Enter number of colours" min="1" max="20">
+
+            <select id="copyFormat">
+                <option value="hex">Copy as HEX</option>
+                <option value="rgb">Copy as RGB</option>
+            </select>
+
+            <button id="generateBtn">Generate Colours</button>
+            <button id="clearBtn">Clear Message</button>
+            <button id="themeBtn">Dark Mode</button>
+        </div>
+
+        <div class="save-controls">
+            <button id="savePaletteBtn">Save Palette</button>
+        </div>
+
+        <p id="message"></p>
+        <p class="note">Generate between 1 and 20 colours. Click a colour code to copy it. Locked colours stay the same
+            when you generate again.</p>
+
+        <div class="palette" id="palette"></div>
+
+        <div id="savedPalettesSection">
+            <h3>Saved Palettes</h3>
+            <div id="savedPalettes"></div>
+        </div>
+    </div>
+
+    <script>
+        const generateButton = document.getElementById("generateBtn");
+        const clearButton = document.getElementById("clearBtn");
+        const themeBtn = document.getElementById("themeBtn");
+        const savePaletteBtn = document.getElementById("savePaletteBtn");
+        const colorInput = document.getElementById("colorCount");
+        const copyFormat = document.getElementById("copyFormat");
+        const palette = document.getElementById("palette");
+        const message = document.getElementById("message");
+        const countHeading = document.getElementById("countHeading");
+        const savedPalettes = document.getElementById("savedPalettes");
+
+        let messageTimeout;
+
+        function generateColor() {
+            const letters = "0123456789ABCDEF";
+            let color = "#";
+
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+
+            return color;
+        }
+
+        function hexToRgb(hex) {
+            const red = parseInt(hex.slice(1, 3), 16);
+            const green = parseInt(hex.slice(3, 5), 16);
+            const blue = parseInt(hex.slice(5, 7), 16);
+
+            return `rgb(${red}, ${green}, ${blue})`;
+        }
+
+        function updateColorCount(number) {
+            countHeading.innerText = number + " colours on screen";
+        }
+
+        function clearMessage() {
+            message.innerText = "";
+        }
+
+        function showMessage(text) {
+            clearTimeout(messageTimeout);
+            message.innerText = text;
+
+            messageTimeout = setTimeout(function () {
+                message.innerText = "";
+            }, 2000);
+        }
+
+        function copyColor(event) {
+            const hexColor = event.currentTarget.innerText;
+            let copiedValue = hexColor;
+
+            if (copyFormat.value === "rgb") {
+                copiedValue = hexToRgb(hexColor);
+            }
+
+            navigator.clipboard.writeText(copiedValue);
+            showMessage(copiedValue + " copied to clipboard!");
+        }
+
+        function toggleLock(event) {
+            event.stopPropagation();
+
+            const box = event.currentTarget.parentElement;
+            const isLocked = box.dataset.locked === "true";
+
+            if (isLocked) {
+                box.dataset.locked = "false";
+                box.classList.remove("locked");
+                event.currentTarget.innerText = "🔓";
+                showMessage("Colour unlocked.");
+            } else {
+                box.dataset.locked = "true";
+                box.classList.add("locked");
+                event.currentTarget.innerText = "🔒";
+                showMessage("Colour locked.");
+            }
+        }
+
+        function createSingleBox(color = null, locked = false) {
+            const box = document.createElement("div");
+            box.classList.add("color-box");
+            box.dataset.locked = locked ? "true" : "false";
+
+            if (locked) {
+                box.classList.add("locked");
+            }
+
+            const colorCode = document.createElement("span");
+            colorCode.classList.add("color-code");
+
+            const lockBtn = document.createElement("button");
+            lockBtn.classList.add("lock-btn");
+
+            const newColor = color || generateColor();
+
+            box.style.backgroundColor = newColor;
+            colorCode.innerText = newColor;
+            lockBtn.innerText = locked ? "🔒" : "🔓";
+
+            colorCode.addEventListener("click", copyColor);
+            lockBtn.addEventListener("click", toggleLock);
+
+            box.appendChild(colorCode);
+            box.appendChild(lockBtn);
+
+            return box;
+        }
+
+        function createBoxes(number) {
+            palette.innerHTML = "";
+
+            for (let i = 0; i < number; i++) {
+                const box = createSingleBox();
+                palette.appendChild(box);
+            }
+
+            updateColorCount(number);
+        }
+
+        function generatePalette() {
+            let number = parseInt(colorInput.value);
+
+            if (!number || number < 1) {
+                number = 5;
+                colorInput.value = 5;
+            }
+
+            if (number > 20) {
+                number = 20;
+                colorInput.value = 20;
+                showMessage("Maximum limit is 20 colours.");
+            }
+
+            const existingBoxes = Array.from(document.querySelectorAll(".color-box"));
+            const newPaletteData = [];
+
+            for (let i = 0; i < number; i++) {
+                if (existingBoxes[i]) {
+                    const oldBox = existingBoxes[i];
+                    const oldColor = oldBox.querySelector(".color-code").innerText;
+                    const isLocked = oldBox.dataset.locked === "true";
+
+                    if (isLocked) {
+                        newPaletteData.push({ color: oldColor, locked: true });
+                    } else {
+                        newPaletteData.push({ color: generateColor(), locked: false });
+                    }
+                } else {
+                    newPaletteData.push({ color: generateColor(), locked: false });
+                }
+            }
+
+            palette.innerHTML = "";
+
+            for (let item of newPaletteData) {
+                const box = createSingleBox(item.color, item.locked);
+                palette.appendChild(box);
+            }
+
+            updateColorCount(number);
+        }
+
+        function getCurrentPalette() {
+            const boxes = document.querySelectorAll(".color-box");
+            const colors = [];
+
+            boxes.forEach(box => {
+                const colorCode = box.querySelector(".color-code").innerText;
+                colors.push(colorCode);
+            });
+
+            return colors;
+        }
+
+        function savePalette() {
+            const currentPalette = getCurrentPalette();
+
+            if (currentPalette.length === 0) {
+                showMessage("No palette to save.");
+                return;
+            }
+
+            let saved = JSON.parse(localStorage.getItem("savedPalettes")) || [];
+            saved.push(currentPalette);
+
+            localStorage.setItem("savedPalettes", JSON.stringify(saved));
+            showMessage("Palette saved!");
+            displaySavedPalettes();
+        }
+
+        function displaySavedPalettes() {
+            const saved = JSON.parse(localStorage.getItem("savedPalettes")) || [];
+            savedPalettes.innerHTML = "";
+
+            if (saved.length === 0) {
+                savedPalettes.innerHTML = "<p style='text-align:center;'>No saved palettes yet.</p>";
+                return;
+            }
+
+            saved.forEach((paletteColors, index) => {
+                const paletteBox = document.createElement("div");
+                paletteBox.classList.add("saved-palette");
+
+                const title = document.createElement("div");
+                title.classList.add("saved-palette-title");
+                title.innerText = "Palette " + (index + 1);
+
+                const colorRow = document.createElement("div");
+                colorRow.classList.add("saved-palette-colors");
+
+                paletteColors.forEach(color => {
+                    const colorDiv = document.createElement("div");
+                    colorDiv.classList.add("saved-color");
+                    colorDiv.style.backgroundColor = color;
+                    colorDiv.title = color;
+                    colorRow.appendChild(colorDiv);
+                });
+
+                const buttonRow = document.createElement("div");
+                buttonRow.classList.add("saved-palette-buttons");
+
+                const loadBtn = document.createElement("button");
+                loadBtn.innerText = "Load";
+                loadBtn.addEventListener("click", function () {
+                    loadPalette(index);
+                });
+
+                const deleteBtn = document.createElement("button");
+                deleteBtn.innerText = "Delete";
+                deleteBtn.addEventListener("click", function () {
+                    deletePalette(index);
+                });
+
+                buttonRow.appendChild(loadBtn);
+                buttonRow.appendChild(deleteBtn);
+
+                paletteBox.appendChild(title);
+                paletteBox.appendChild(colorRow);
+                paletteBox.appendChild(buttonRow);
+
+                savedPalettes.appendChild(paletteBox);
+            });
+        }
+
+        function loadPalette(index) {
+            const saved = JSON.parse(localStorage.getItem("savedPalettes")) || [];
+            const selectedPalette = saved[index];
+
+            if (!selectedPalette) {
+                return;
+            }
+
+            palette.innerHTML = "";
+
+            selectedPalette.forEach(color => {
+                const box = createSingleBox(color, false);
+                palette.appendChild(box);
+            });
+
+            colorInput.value = selectedPalette.length;
+            updateColorCount(selectedPalette.length);
+            showMessage("Palette loaded!");
+        }
+
+        function deletePalette(index) {
+            let saved = JSON.parse(localStorage.getItem("savedPalettes")) || [];
+            saved.splice(index, 1);
+
+            localStorage.setItem("savedPalettes", JSON.stringify(saved));
+            showMessage("Palette deleted.");
+            displaySavedPalettes();
+        }
+
+        function toggleTheme() {
+            document.body.classList.toggle("dark-mode");
+
+            if (document.body.classList.contains("dark-mode")) {
+                themeBtn.innerText = "Light Mode";
+                localStorage.setItem("theme", "dark");
+            } else {
+                themeBtn.innerText = "Dark Mode";
+                localStorage.setItem("theme", "light");
+            }
+        }
+
+        function loadTheme() {
+            const savedTheme = localStorage.getItem("theme");
+
+            if (savedTheme === "dark") {
+                document.body.classList.add("dark-mode");
+                themeBtn.innerText = "Light Mode";
+            }
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === "g" || event.key === "G") {
+                generatePalette();
+            }
+        }
+
+        generateButton.addEventListener("click", generatePalette);
+        clearButton.addEventListener("click", clearMessage);
+        themeBtn.addEventListener("click", toggleTheme);
+        savePaletteBtn.addEventListener("click", savePalette);
+        document.addEventListener("keydown", handleKeyPress);
+
+        colorInput.value = 5;
+        loadTheme();
+        createBoxes(5);
+        displaySavedPalettes();
+    </script>
+
+</body>
+
+</html>
